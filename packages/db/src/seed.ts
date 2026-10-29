@@ -17,7 +17,7 @@ const now = new Date();
 const expiresAt = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
 
 await db.delete(users).where(eq(users.workosUserId, "user_seed_demo"));
-await db.delete(agents).where(eq(agents.workosRegistrationId, "agent_reg_seed_demo"));
+await db.delete(agents).where(eq(agents.registrationId, "agent_reg_seed_demo"));
 
 const userId = randomUUID();
 const agentId = randomUUID();
@@ -32,7 +32,7 @@ await db.insert(users).values({
 
 await db.insert(agents).values({
   id: agentId,
-  workosRegistrationId: "agent_reg_seed_demo",
+  registrationId: "agent_reg_seed_demo",
   status: "claimed",
   claimedByUserId: userId,
   scopes: ["paste:create", "paste:read"],

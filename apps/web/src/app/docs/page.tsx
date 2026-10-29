@@ -51,6 +51,24 @@ GET /api/pastes/:slug/meta`}</code>
       </section>
 
       <section>
+        <h2>Agent registration</h2>
+        <p>
+          Anonymous pastes need no account. For private pastes or 30-day retention, register an
+          anonymous agent through the self-hosted <code>auth.md</code> flow:
+        </p>
+        <pre>
+          <code>{`t1 agent register
+t1 agent status
+t1 paste notes.txt --visibility private --expires 30d`}</code>
+        </pre>
+        <p>
+          The protocol is documented at <a href="/auth.md">/auth.md</a>. This instance supports
+          anonymous registration only. There are no human accounts, email verification, or claim
+          ceremonies.
+        </p>
+      </section>
+
+      <section>
         <h2>Limits</h2>
         <ul>
           <li>256 KB of UTF-8 text per paste.</li>

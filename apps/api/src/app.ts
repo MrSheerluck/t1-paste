@@ -9,6 +9,7 @@ import type { AppEnv } from "./env.ts";
 import { errorHandler } from "./lib/error-handler.ts";
 import { logger } from "./lib/logger.ts";
 import { requestId } from "./lib/request-id.ts";
+import { registerAgentAuthRoutes, resourceMetadataUrl } from "./routes/agent-auth.ts";
 import { registerPasteRoutes } from "./routes/pastes.ts";
 
 export type AppDependencies = {
@@ -84,6 +85,13 @@ export function createApp(deps: AppDependencies) {
   app.use("*", requestId);
   app.use("*", logger);
   app.use("*", secureHeaders());
+  app.use("*", async (c, next) => {
+    await next();
+
+    if (c.res.status === 401) {
+      c.header("WWW-Authenticate", `Bearer resource_metadata="${resourceMetadataUrl(deps.env)}"`);
+    }
+  });
   app.use(
     "/api/pastes",
     bodyLimit({
@@ -122,6 +130,7 @@ export function createApp(deps: AppDependencies) {
     ),
   );
 
+  registerAgentAuthRoutes(app, deps);
   registerPasteRoutes(app, deps);
 
   app.doc("/openapi.json", {

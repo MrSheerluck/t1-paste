@@ -188,6 +188,9 @@ catalogs:
     hono:
       specifier: ^4.13.14
       version: 4.13.14
+    jose:
+      specifier: ^6.2.13
+      version: 6.2.13
     next:
       specifier: ^16.4.3
       version: 16.4.3
@@ -250,6 +253,9 @@ importers:
       hono:
         specifier: 'catalog:'
         version: 4.13.14
+      jose:
+        specifier: 'catalog:'
+        version: 6.2.13
       zod:
         specifier: 'catalog:'
         version: 4.6.7
@@ -328,8 +334,6 @@ importers:
       vite-plus:
         specifier: 'catalog:'
         version: 1.4.0(@types/node@24.19.2)(@vitest/ui@5.0.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1)
-
-  packages/emails: {}
 
   packages/sdk:
     dependencies:
@@ -2055,6 +2059,9 @@ packages:
   jiti@2.7.0:
     resolution: {integrity: sha512-AC/7JofJvZGrrneWNaEnJeOLUx+JlGt7tNa0wZiRPT4MY1wmfKjt2+6O2p2uz2+skll8OZZmJMNqeke7kKbNgQ==}
     hasBin: true
+
+  jose@6.2.13:
+    resolution: {integrity: sha512-7TIg10ZE1x82YediN+lcrPNvGMKge9yFHQD+Qho/b8y2adfugU3AsvvHfxV0fzyFllT6l9xCjf4RWY9g/Z9PJQ==}
 
   js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
@@ -3786,6 +3793,8 @@ snapshots:
   html-void-elements@3.0.0: {}
 
   jiti@2.7.0: {}
+
+  jose@6.2.13: {}
 
   js-tokens@4.0.0: {}
 

@@ -1,6 +1,8 @@
 User-agent: *
 Allow: /
 Disallow: /api/
+Disallow: /agent/
+Disallow: /oauth2/
 Disallow: /new
 Disallow: /dashboard
 Disallow: /claim

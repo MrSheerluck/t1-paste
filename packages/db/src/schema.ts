@@ -57,7 +57,9 @@ export const agents = pgTable(
   "agents",
   {
     id: uuid("id").primaryKey().defaultRandom(),
-    workosRegistrationId: text("workos_registration_id").notNull(),
+    // The physical column name is legacy from the WorkOS prototype. The
+    // application treats it as the agent registration id.
+    registrationId: text("workos_registration_id").notNull(),
     status: agentStatus("status").notNull().default("anonymous"),
     claimedByUserId: uuid("claimed_by_user_id").references(() => users.id, {
       onDelete: "set null",
@@ -70,9 +72,32 @@ export const agents = pgTable(
     ...timestamps(),
   },
   (table) => [
-    uniqueIndex("agents_workos_registration_id_unique").on(table.workosRegistrationId),
+    uniqueIndex("agents_workos_registration_id_unique").on(table.registrationId),
     index("agents_claimed_by_user_idx").on(table.claimedByUserId),
     index("agents_status_idx").on(table.status),
+  ],
+);
+
+export const agentAccessTokens = pgTable(
+  "agent_access_tokens",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    agentId: uuid("agent_id")
+      .notNull()
+      .references(() => agents.id, { onDelete: "cascade" }),
+    tokenHash: text("token_hash").notNull(),
+    scopes: text("scopes")
+      .array()
+      .notNull()
+      .default(sql`'{}'::text[]`),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    revokedAt: timestamp("revoked_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    uniqueIndex("agent_access_tokens_token_hash_unique").on(table.tokenHash),
+    index("agent_access_tokens_agent_idx").on(table.agentId),
+    index("agent_access_tokens_expires_at_idx").on(table.expiresAt),
   ],
 );
 

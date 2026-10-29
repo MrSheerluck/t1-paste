@@ -6,6 +6,7 @@ import { parseEnv } from "./env.ts";
 const env = parseEnv({
   NODE_ENV: "production",
   DATABASE_URL: "postgres://invalid",
+  AGENT_AUTH_SECRET: "worker-placeholder-secret-16",
 });
 const { db } = createDatabase(env.DATABASE_URL);
 const app = createApp({

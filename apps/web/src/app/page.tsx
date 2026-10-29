@@ -64,8 +64,8 @@ https://paste.transistorone.com/7Kp2mQx9`}</code>
           <p className="feature-index">03</p>
           <h2>Yours to host</h2>
           <p>
-            AGPL-3.0, Docker-first, Postgres-only. Run the same code with your own WorkOS and Resend
-            accounts.
+            AGPL-3.0, Docker-first, Postgres-only. Run the same code with your own Postgres and a
+            self-hosted auth.md implementation.
           </p>
         </article>
       </section>
@@ -75,8 +75,8 @@ https://paste.transistorone.com/7Kp2mQx9`}</code>
           <p className="eyebrow">For agents</p>
           <h2>Read the machine-readable docs.</h2>
           <p>
-            Start with <code>/llms.txt</code>. Authentication and agent accounts are documented in{" "}
-            <code>/auth.md</code> when enabled.
+            Start with <code>/llms.txt</code>. Anonymous agent registration and token exchange are
+            documented in <code>/auth.md</code>.
           </p>
         </div>
         <div className="callout-links">

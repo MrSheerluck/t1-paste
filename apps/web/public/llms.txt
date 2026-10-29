@@ -27,12 +27,32 @@ GET /api/pastes/:slug/raw
 GET /api/pastes/:slug/meta
 ```
 
+## Agent auth
+
+Anonymous paste creation requires no authentication. For private or 30-day
+pastes, register an anonymous agent account through auth.md:
+
+```bash
+t1 agent register
+t1 agent status
+```
+
+Or follow the protocol directly:
+
+```bash
+curl https://paste.transistorone.com/auth.md
+```
+
+The service supports anonymous registration only. There are no human accounts,
+`service_auth`, claim ceremonies, or ID-JAG assertions.
+
 ## CLI
 
 ```bash
 t1 paste file.txt
 t1 paste - < file.txt
 t1 get https://paste.transistorone.com/abc123
+t1 agent register
 ```
 
 ## Limits

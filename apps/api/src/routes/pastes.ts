@@ -2,14 +2,10 @@ import type { Context } from "hono";
 import { z, type OpenAPIHono } from "@hono/zod-openapi";
 
 import type { Database } from "@t1/db";
-import {
-  createPasteInputSchema,
-  PasteDomainError,
-  type CreatePasteInput,
-  type Principal,
-} from "@t1/shared";
+import { createPasteInputSchema, PasteDomainError, type CreatePasteInput } from "@t1/shared";
 
 import type { AppEnv } from "../env.ts";
+import { resolvePrincipal } from "../services/agent-auth.ts";
 import {
   createPaste,
   getPaste,
@@ -28,15 +24,14 @@ type PasteRoutesDependencies = {
   env: AppEnv;
 };
 
-const anonymousPrincipal: Principal = { kind: "anonymous" };
-
 export function registerPasteRoutes(
   app: OpenAPIHono<AppBindings>,
   deps: PasteRoutesDependencies,
 ): void {
   app.post("/api/pastes", async (c) => {
     const input = await parseCreatePasteInput(c.req.raw);
-    const row = await createPaste(deps.db, anonymousPrincipal, input);
+    const principal = await resolvePrincipal(deps.db, c.req.header("authorization"));
+    const row = await createPaste(deps.db, principal, input);
     const url = new URL(`/${row.slug}`, deps.env.APP_URL).toString();
 
     if ((c.req.header("accept") ?? "").includes("text/plain")) {
@@ -56,8 +51,9 @@ export function registerPasteRoutes(
 
   app.get("/api/pastes/:slug", async (c) => {
     const slug = c.req.param("slug");
+    const principal = await resolvePrincipal(deps.db, c.req.header("authorization"));
     const row = await getPaste(deps.db, slug, {
-      principal: anonymousPrincipal,
+      principal,
       password: c.req.header("x-paste-password") ?? c.req.query("password"),
       burn: isTruthy(c.req.query("burn")),
     });
@@ -71,8 +67,9 @@ export function registerPasteRoutes(
 
   app.get("/api/pastes/:slug/raw", async (c) => {
     const slug = c.req.param("slug");
+    const principal = await resolvePrincipal(deps.db, c.req.header("authorization"));
     const row = await getPaste(deps.db, slug, {
-      principal: anonymousPrincipal,
+      principal,
       password: c.req.header("x-paste-password") ?? c.req.query("password"),
       burn: isTruthy(c.req.query("burn")),
     });
@@ -82,7 +79,8 @@ export function registerPasteRoutes(
 
   app.get("/api/pastes/:slug/meta", async (c) => {
     const slug = c.req.param("slug");
-    const row = await getPasteMeta(deps.db, slug, anonymousPrincipal);
+    const principal = await resolvePrincipal(deps.db, c.req.header("authorization"));
+    const row = await getPasteMeta(deps.db, slug, principal);
 
     return c.json(toMetaJson(row), 200);
   });

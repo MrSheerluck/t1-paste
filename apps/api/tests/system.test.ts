@@ -9,6 +9,7 @@ const databaseUrl = process.env.DATABASE_URL ?? "postgres://t1:t1@localhost:5432
 const env = parseEnv({
   NODE_ENV: "test",
   DATABASE_URL: databaseUrl,
+  AGENT_AUTH_SECRET: "test-agent-auth-secret-16",
 });
 const { db } = createDatabase(databaseUrl);
 const app = createApp({

@@ -39,9 +39,23 @@ Use `/meta` when you only need title, language, expiry, and view count.
 
 Anonymous paste creation requires no authentication.
 
-Agent accounts and `auth.md` registration are being wired through WorkOS Agent
-Registration. Until this instance advertises agent auth in `/.well-known`, use
-anonymous creation.
+For private pastes or the 30-day maximum expiry, register an anonymous agent
+account through `auth.md`:
+
+```bash
+t1 agent register
+```
+
+Or follow the protocol directly:
+
+```text
+GET  https://paste.transistorone.com/auth.md
+POST https://paste.transistorone.com/agent/identity
+POST https://paste.transistorone.com/oauth2/token
+```
+
+This instance supports anonymous registration only. There are no human accounts,
+`service_auth`, claim ceremonies, or ID-JAG assertions.
 
 ## Limits and errors
 

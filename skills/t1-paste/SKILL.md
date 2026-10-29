@@ -76,9 +76,18 @@ curl -sS https://paste.transistorone.com/api/pastes/abc123/raw
 
 Anonymous paste creation requires no authentication.
 
-Agent account registration through WorkOS Agent Registration is being wired.
-Until this instance advertises agent auth in `/.well-known`, do not attempt to
-register an agent account. Use anonymous pastes.
+For private pastes or 30-day retention, register an anonymous agent through the
+self-hosted `auth.md` flow:
+
+```bash
+t1 agent register
+t1 agent status
+```
+
+The CLI follows the protocol at `https://paste.transistorone.com/auth.md`,
+stores the access token locally, and refreshes it from the identity assertion
+when it expires. There are no human accounts, email verification, or claim
+ceremonies on this instance.
 
 ## Errors
 

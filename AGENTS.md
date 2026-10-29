@@ -26,7 +26,6 @@ running on Cloudflare Workers in production and Node for self-hosting.
 - `apps/cli` — Rust CLI.
 - `packages/db` — Drizzle schema, migrations, and database client.
 - `packages/shared` — runtime-agnostic Zod schemas, types, and pure helpers.
-- `packages/emails` — email templates and sending adapter.
 - `packages/sdk` — typed API client.
 - `skills/t1-paste` — installable agent skill.
 - `infra` — Docker and self-host configuration.
@@ -82,7 +81,9 @@ Do not add these without an explicit product decision:
 - Teams or organizations.
 - R2, S3, or any blob storage. v1 is Postgres-only.
 - MCP server.
-- A local auth adapter. WorkOS and Resend are required.
+- Human accounts, human login UI, or email delivery.
+- WorkOS, Resend, `service_auth`, claim ceremonies, or ID-JAG.
+- The POC uses self-hosted anonymous `auth.md` registration only.
 
 ## Limits and defaults:
 
@@ -101,8 +102,9 @@ Do not add these without an explicit product decision:
 - Hash IP addresses before storage.
 - Use parameterized queries through Drizzle.
 - Sanitize Markdown before rendering.
-- Treat WorkOS access tokens as untrusted until signature, issuer, audience, and expiry are verified.
-- Keep WorkOS API keys server-side only.
+- Verify agent identity assertions and access tokens before trusting them.
+- Keep `AGENT_AUTH_SECRET` and optional registration bootstrap tokens server-side only.
+- Hash agent access tokens before storage.
 
 ## Testing
 

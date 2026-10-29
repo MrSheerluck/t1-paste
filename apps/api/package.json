@@ -16,6 +16,7 @@
     "@t1/shared": "workspace:*",
     "drizzle-orm": "catalog:",
     "hono": "catalog:",
+    "jose": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {

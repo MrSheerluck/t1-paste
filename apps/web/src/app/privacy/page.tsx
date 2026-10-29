@@ -16,8 +16,9 @@ export default function PrivacyPage() {
         contents.
       </p>
       <p>
-        Anonymous pastes are not linked to an account. Account and agent features use WorkOS for
-        identity. Transactional email is sent through Resend.
+        Anonymous pastes are not linked to an account. Agent registrations are self-hosted anonymous
+        accounts; this POC has no human accounts and no external identity provider. It does not send
+        email.
       </p>
       <p>
         To request deletion of account data, contact{" "}
