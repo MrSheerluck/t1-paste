@@ -14,7 +14,7 @@ export default function DocsPage() {
         <h2>Create a paste with curl</h2>
         <pre>
           <code>{`curl -sS --data-binary @notes.txt \\
-  https://paste.transistorone.com/api/pastes`}</code>
+  http://localhost:3000/api/pastes`}</code>
         </pre>
         <p>
           The response is a plain URL. Add <code>Accept: text/plain</code> to make that explicit.
@@ -28,7 +28,7 @@ export default function DocsPage() {
         <pre>
           <code>{`t1 paste notes.txt
 t1 paste - < notes.txt
-t1 get https://paste.transistorone.com/abc123`}</code>
+t1 get http://localhost:3000/abc123`}</code>
         </pre>
         <p>
           The CLI prints only the URL for <code>paste</code> and only the content for{" "}

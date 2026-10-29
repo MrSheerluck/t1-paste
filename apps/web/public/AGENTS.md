@@ -11,18 +11,19 @@ does not execute code. It does not render untrusted HTML as a page.
 ## Install the CLI (optional)
 
 ```bash
-curl -fsSL https://paste.transistorone.com/install.sh | sh
+curl -fsSL http://localhost:3000/install.sh | sh
 ```
 
-The installer requires `git` and `cargo`. Do not block the task if the CLI
-cannot be installed; use the `curl` path below.
+The recommended install is `cargo install t1-cli --locked`; it requires Rust.
+Do not block the task if the CLI cannot be installed; use the `curl` path
+below.
 
 ## Create a paste
 
 Prefer the raw text path:
 
 ```bash
-curl -sS --data-binary @file.txt https://paste.transistorone.com/api/pastes
+curl -sS --data-binary @file.txt http://localhost:3000/api/pastes
 ```
 
 To receive only the URL:
@@ -31,7 +32,7 @@ To receive only the URL:
 curl -sS \
   -H "Accept: text/plain" \
   --data-binary @file.txt \
-  https://paste.transistorone.com/api/pastes
+  http://localhost:3000/api/pastes
 ```
 
 The URL is the result. Do not parse the HTML page.
@@ -39,7 +40,7 @@ The URL is the result. Do not parse the HTML page.
 ## Read a paste
 
 ```bash
-curl -sS https://paste.transistorone.com/api/pastes/abc123/raw
+curl -sS http://localhost:3000/api/pastes/abc123/raw
 ```
 
 Use `/meta` when you only need title, language, expiry, and view count.
@@ -58,9 +59,9 @@ t1 agent register
 Or follow the protocol directly:
 
 ```text
-GET  https://paste.transistorone.com/auth.md
-POST https://paste.transistorone.com/agent/identity
-POST https://paste.transistorone.com/oauth2/token
+GET  http://localhost:3000/auth.md
+POST http://localhost:3000/agent/identity
+POST http://localhost:3000/oauth2/token
 ```
 
 This instance supports anonymous registration only. There are no human accounts,

@@ -19,16 +19,14 @@ command -v t1
 If `t1` is missing, **do not block the task on installing Rust**. Use the HTTP
 API fallback below. The CLI is an optimization, not a requirement.
 
-If you want the CLI, install it from the source repository:
+If you want the CLI, install the published crate:
 
 ```bash
-git clone https://github.com/MrSheerluck/t1-paste.git
-cd t1-paste
-cargo install --path apps/cli --locked
+cargo install t1-cli --locked
 ```
 
-Cargo installs the binary to `$HOME/.cargo/bin/t1`. If `command -v t1` still
-fails, call the absolute path directly:
+The binary is named `t1`. Cargo installs it to `$HOME/.cargo/bin/t1`. If
+`command -v t1` still fails, call the absolute path directly:
 
 ```bash
 "$HOME/.cargo/bin/t1" paste file.txt
@@ -43,11 +41,8 @@ export PATH="$HOME/.cargo/bin:$PATH"
 For convenience:
 
 ```bash
-curl -fsSL https://paste.transistorone.com/install.sh | sh
+curl -fsSL http://localhost:3000/install.sh | sh
 ```
-
-The install script still requires `git` and `cargo`. A prebuilt release binary
-is not available yet.
 
 ## Create a paste
 
@@ -73,7 +68,7 @@ t1 paste file.txt --password "secret"
 ## Read a paste
 
 ```bash
-t1 get https://paste.transistorone.com/abc123
+t1 get http://localhost:3000/abc123
 t1 get abc123
 ```
 
@@ -87,13 +82,13 @@ If the CLI is unavailable, use `curl`. This is the reliable path:
 curl -sS \
   -H "Accept: text/plain" \
   --data-binary @file.txt \
-  https://paste.transistorone.com/api/pastes
+  http://localhost:3000/api/pastes
 ```
 
 Read raw content:
 
 ```bash
-curl -sS https://paste.transistorone.com/api/pastes/abc123/raw
+curl -sS http://localhost:3000/api/pastes/abc123/raw
 ```
 
 For the local POC:
@@ -128,7 +123,7 @@ t1 agent register
 t1 agent status
 ```
 
-The CLI follows the protocol at `https://paste.transistorone.com/auth.md`,
+The CLI follows the protocol at `http://localhost:3000/auth.md`,
 stores the access token locally, and refreshes it from the identity assertion
 when it expires. There are no human accounts, email verification, or claim
 ceremonies on this instance.

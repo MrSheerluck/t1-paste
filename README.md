@@ -9,7 +9,7 @@ protocol.
 This is a POC: there are no human accounts, no external identity provider, and
 no email service.
 
-- Web: https://paste.transistorone.com
+- Web: http://localhost:3000
 - CLI: `t1`
 - License: AGPL-3.0
 
@@ -67,14 +67,14 @@ curl -sS \
 
 ## CLI
 
-Install from source with one command:
+Install the published crate:
 
 ```bash
-curl -fsSL http://localhost:3000/install.sh | sh
+cargo install t1-cli --locked
 ```
 
-The installer requires `git` and `cargo`. It installs `t1` to
-`$HOME/.cargo/bin/t1`. If that directory is not on your `PATH`:
+The binary is named `t1` and installs to `$HOME/.cargo/bin/t1`. If that
+directory is not on your `PATH`:
 
 ```bash
 export PATH="$HOME/.cargo/bin:$PATH"
@@ -83,15 +83,21 @@ export PATH="$HOME/.cargo/bin:$PATH"
 Then:
 
 ```bash
-t1 --api-url http://localhost:8787 paste notes.txt
-t1 --api-url http://localhost:8787 get <url>
+t1 paste notes.txt
+t1 get <url>
+```
+
+The CLI defaults to `http://localhost:8787`. Override it with:
+
+```bash
+T1_API_URL=http://localhost:8787 t1 paste notes.txt
 ```
 
 Or run from the repo without installing:
 
 ```bash
 cd apps/cli
-cargo run -- --api-url http://localhost:8787 paste notes.txt
+cargo run -- paste notes.txt
 ```
 
 Register an anonymous agent for private or 30-day pastes:

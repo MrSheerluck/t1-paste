@@ -35,8 +35,8 @@ export default function HomePage() {
           </div>
           <pre>
             <code>{`$ curl -sS --data-binary @notes.txt \\
-    https://paste.transistorone.com/api/pastes
-https://paste.transistorone.com/7Kp2mQx9`}</code>
+    http://localhost:3000/api/pastes
+http://localhost:3000/7Kp2mQx9`}</code>
           </pre>
         </div>
       </section>

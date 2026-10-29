@@ -10,7 +10,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::json;
 use url::Url;
 
-const DEFAULT_API_URL: &str = "https://paste.transistorone.com";
+const DEFAULT_API_URL: &str = "http://localhost:8787";
 const JWT_BEARER_GRANT: &str = "urn:ietf:params:oauth:grant-type:jwt-bearer";
 
 #[derive(Debug, Clone, Parser)]
@@ -538,7 +538,7 @@ mod tests {
     #[test]
     fn extracts_slug_from_short_url() {
         assert_eq!(
-            extract_slug("https://paste.transistorone.com/abc123").unwrap(),
+            extract_slug("http://localhost:8787/abc123").unwrap(),
             "abc123"
         );
     }
@@ -546,7 +546,7 @@ mod tests {
     #[test]
     fn extracts_slug_from_api_raw_url() {
         assert_eq!(
-            extract_slug("https://paste.transistorone.com/api/pastes/abc123/raw")
+            extract_slug("http://localhost:8787/api/pastes/abc123/raw")
                 .unwrap(),
             "abc123"
         );

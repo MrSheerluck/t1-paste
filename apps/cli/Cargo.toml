@@ -2,8 +2,16 @@
 name = "t1-cli"
 version = "0.1.0"
 edition = "2021"
+rust-version = "1.85"
 license = "AGPL-3.0-only"
-description = "Agent-first pastebin CLI"
+description = "Agent-first pastebin CLI for t1-paste"
+readme = "README.md"
+repository = "https://github.com/MrSheerluck/t1-paste"
+homepage = "https://github.com/MrSheerluck/t1-paste"
+documentation = "https://docs.rs/t1-cli"
+keywords = ["pastebin", "cli", "agents", "paste", "t1"]
+categories = ["command-line-utilities"]
+authors = ["Transistor One <hello@transistorone.com>"]
 
 [[bin]]
 name = "t1"

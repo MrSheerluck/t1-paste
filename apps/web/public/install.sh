@@ -1,28 +1,31 @@
 #!/usr/bin/env sh
 set -eu
 
-REPO="${T1_REPO:-MrSheerluck/t1-paste}"
-REF="${T1_REF:-main}"
-
-if ! command -v git >/dev/null 2>&1; then
-  echo "error: git is required to install t1" >&2
-  exit 1
-fi
-
 if ! command -v cargo >/dev/null 2>&1; then
-  echo "error: cargo is required to build t1 from source" >&2
+  echo "error: cargo is required to install t1" >&2
   echo "Install Rust from https://rustup.rs and run this script again." >&2
   exit 1
 fi
 
-tmp_dir="$(mktemp -d)"
-trap 'rm -rf "$tmp_dir"' EXIT INT TERM
+if cargo install t1-cli --locked; then
+  :
+else
+  echo "crates.io install failed; building from source instead..." >&2
 
-echo "Cloning $REPO ($REF)..."
-git clone --depth 1 --branch "$REF" "https://github.com/$REPO.git" "$tmp_dir/t1-paste" >/dev/null
+  if ! command -v git >/dev/null 2>&1; then
+    echo "error: git is required for the source fallback" >&2
+    exit 1
+  fi
 
-echo "Building t1..."
-cargo install --path "$tmp_dir/t1-paste/apps/cli" --locked
+  tmp_dir="$(mktemp -d)"
+  trap 'rm -rf "$tmp_dir"' EXIT INT TERM
+
+  git clone --depth 1 --branch "${T1_REF:-main}" \
+    "https://github.com/${T1_REPO:-MrSheerluck/t1-paste}.git" \
+    "$tmp_dir/t1-paste" >/dev/null
+
+  cargo install --path "$tmp_dir/t1-paste/apps/cli" --locked
+fi
 
 echo
 echo "Installed t1."

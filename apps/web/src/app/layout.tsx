@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     template: "%s · t1-paste",
   },
   description: "A free, open-source, agent-first pastebin.",
-  metadataBase: new URL("https://paste.transistorone.com"),
+  metadataBase: new URL(process.env.APP_URL ?? "http://localhost:3000"),
   icons: {
     icon: "/favicon.svg",
   },

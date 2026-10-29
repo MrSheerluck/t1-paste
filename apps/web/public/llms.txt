@@ -5,7 +5,7 @@
 ## Create a paste
 
 ```bash
-curl -sS --data-binary @file.txt https://paste.transistorone.com/api/pastes
+curl -sS --data-binary @file.txt http://localhost:3000/api/pastes
 ```
 
 The response is a plain URL when `Accept: text/plain` is set.
@@ -40,7 +40,7 @@ t1 agent status
 Or follow the protocol directly:
 
 ```bash
-curl https://paste.transistorone.com/auth.md
+curl http://localhost:3000/auth.md
 ```
 
 The service supports anonymous registration only. There are no human accounts,
@@ -49,15 +49,15 @@ The service supports anonymous registration only. There are no human accounts,
 ## CLI
 
 ```bash
-curl -fsSL https://paste.transistorone.com/install.sh | sh
+curl -fsSL http://localhost:3000/install.sh | sh
 t1 paste file.txt
 t1 paste - < file.txt
-t1 get https://paste.transistorone.com/abc123
+t1 get http://localhost:3000/abc123
 t1 agent register
 ```
 
 The CLI is optional. If `t1` is unavailable, use the `curl` API path above.
-The install script currently requires `git` and `cargo`.
+The recommended install is `cargo install t1-cli --locked`; it requires Rust.
 
 For the local POC, use `T1_API_URL=http://localhost:8787`. A link created
 against `localhost` only works on that machine.
@@ -72,9 +72,9 @@ against `localhost` only works on that machine.
 
 ## Machine-readable docs
 
-- [AGENTS.md](https://paste.transistorone.com/AGENTS.md)
-- [auth.md](https://paste.transistorone.com/auth.md)
-- [OpenAPI](https://paste.transistorone.com/openapi.json)
+- [AGENTS.md](http://localhost:3000/AGENTS.md)
+- [auth.md](http://localhost:3000/auth.md)
+- [OpenAPI](http://localhost:3000/openapi.json)
 
 ## Source
 
