@@ -9,6 +9,9 @@ t1-paste is a text-only pastebin. Create a paste, get a short URL.
 
 ## First: check whether the CLI exists
 
+Installing this skill does **not** install the CLI. The skill is instructions;
+the binary is a separate install.
+
 ```bash
 command -v t1
 ```
