@@ -6,6 +6,7 @@ import { BurnReveal } from "@/components/burn-reveal";
 import { CopyButton } from "@/components/copy-button";
 import { PasswordPrompt } from "@/components/password-prompt";
 import { ApiError, fetchPasteContent, fetchPasteMeta, type PasteMeta } from "@/lib/api";
+import { highlightCode } from "@/lib/highlight";
 
 export const dynamic = "force-dynamic";
 
@@ -45,6 +46,7 @@ export default async function PastePage({ params }: PageProps) {
 
   const isLocked = meta.has_password || meta.burn_after_read;
   const content = isLocked ? null : await fetchPasteContent(slug);
+  const highlighted = content ? await highlightCode(content, meta.language) : null;
   const showRaw = !isLocked;
 
   return (
@@ -83,6 +85,9 @@ export default async function PastePage({ params }: PageProps) {
         <BurnReveal slug={slug} />
       ) : meta.has_password ? (
         <PasswordPrompt language={meta.language} slug={slug} />
+      ) : highlighted ? (
+        // Shiki escapes paste content before emitting highlighted HTML.
+        <div className="paste-content shiki" dangerouslySetInnerHTML={{ __html: highlighted }} />
       ) : (
         <pre className="paste-content">
           <code>{content}</code>

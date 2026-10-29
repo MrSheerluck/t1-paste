@@ -580,6 +580,26 @@ code {
   tab-size: 2;
 }
 
+.paste-content.shiki {
+  padding: 0;
+}
+
+.paste-content.shiki pre {
+  min-height: 320px;
+  margin: 0;
+  padding: 24px;
+  overflow-x: auto;
+  background: transparent !important;
+  font-size: 13px;
+  line-height: 1.7;
+  tab-size: 2;
+}
+
+.paste-content.shiki code {
+  color: inherit;
+  font-size: inherit;
+}
+
 .paste-footer {
   display: flex;
   align-items: center;

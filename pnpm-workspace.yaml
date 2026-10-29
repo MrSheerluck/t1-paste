@@ -19,6 +19,7 @@ catalog:
   postgres: ^3.4.9
   react: ^19.3.1
   react-dom: ^19.3.1
+  shiki: ^4.5.0
   typescript: ^7.0.2
   vite: npm:@voidzero-dev/vite-plus-core@1.4.0
   vite-plus: 1.4.0
