@@ -1,3 +1,4 @@
-import { PRODUCT_NAME } from "@t1/shared";
-
-export const API_NAME = `${PRODUCT_NAME}-api`;
+export { createApp } from "./app.ts";
+export type { AppDependencies } from "./app.ts";
+export { parseEnv } from "./env.ts";
+export type { AppEnv } from "./env.ts";

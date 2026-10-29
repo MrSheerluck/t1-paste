@@ -60,5 +60,43 @@ services:
         - action: rebuild
           path: pnpm-workspace.yaml
 
+  api:
+    build:
+      context: .
+      dockerfile: infra/dev/Dockerfile
+      target: api
+    env_file:
+      - .env
+    ports:
+      - "8787:8787"
+    depends_on:
+      db:
+        condition: service_healthy
+    develop:
+      watch:
+        - action: sync
+          path: .
+          target: /app
+          ignore:
+            - .git
+            - .env
+            - node_modules
+            - apps/*/node_modules
+            - packages/*/node_modules
+            - apps/*/dist
+            - packages/*/dist
+            - apps/*/.next
+            - apps/cli/target
+            - coverage
+            - playwright-report
+            - test-results
+            - BUILD_PLAN.md
+            - LEARNING_LOG.md
+        - action: rebuild
+          path: package.json
+        - action: rebuild
+          path: pnpm-lock.yaml
+        - action: rebuild
+          path: pnpm-workspace.yaml
 volumes:
   pgdata:

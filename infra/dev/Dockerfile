@@ -22,4 +22,6 @@ ENV PATH="/app/node_modules/.bin:$PATH"
 
 FROM deps AS workspace
 
-CMD ["sleep", "infinity"]
+FROM deps AS api
+
+CMD ["pnpm", "--filter", "@t1/api", "dev"]
