@@ -98,5 +98,47 @@ services:
           path: pnpm-lock.yaml
         - action: rebuild
           path: pnpm-workspace.yaml
+
+  web:
+    build:
+      context: .
+      dockerfile: infra/dev/Dockerfile
+      target: web
+    env_file:
+      - .env
+    environment:
+      API_INTERNAL_URL: http://api:8787
+      NEXT_TELEMETRY_DISABLED: "1"
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+    develop:
+      watch:
+        - action: sync
+          path: .
+          target: /app
+          ignore:
+            - .git
+            - .env
+            - node_modules
+            - apps/*/node_modules
+            - packages/*/node_modules
+            - apps/*/dist
+            - packages/*/dist
+            - apps/*/.next
+            - apps/cli/target
+            - coverage
+            - playwright-report
+            - test-results
+            - BUILD_PLAN.md
+            - LEARNING_LOG.md
+        - action: rebuild
+          path: package.json
+        - action: rebuild
+          path: pnpm-lock.yaml
+        - action: rebuild
+          path: pnpm-workspace.yaml
+
 volumes:
   pgdata:

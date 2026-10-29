@@ -1,14 +1,20 @@
 import { OpenAPIHono, createRoute, z } from "@hono/zod-openapi";
+import { bodyLimit } from "hono/body-limit";
 import { secureHeaders } from "hono/secure-headers";
+
+import type { Database } from "@t1/db";
+import { PASTE_MAX_BYTES } from "@t1/shared";
 
 import type { AppEnv } from "./env.ts";
 import { errorHandler } from "./lib/error-handler.ts";
 import { logger } from "./lib/logger.ts";
 import { requestId } from "./lib/request-id.ts";
+import { registerPasteRoutes } from "./routes/pastes.ts";
 
 export type AppDependencies = {
   env: AppEnv;
   version: string;
+  db: Database;
 };
 
 const healthResponse = z.object({
@@ -78,6 +84,21 @@ export function createApp(deps: AppDependencies) {
   app.use("*", requestId);
   app.use("*", logger);
   app.use("*", secureHeaders());
+  app.use(
+    "/api/pastes",
+    bodyLimit({
+      maxSize: PASTE_MAX_BYTES,
+      onError: (c) =>
+        c.json(
+          {
+            error: "paste_too_large",
+            message: `Paste exceeds the ${PASTE_MAX_BYTES / 1024} KB limit.`,
+            request_id: c.get("requestId") ?? "unknown",
+          },
+          413,
+        ),
+    }),
+  );
   app.onError(errorHandler);
 
   app.openapi(healthRoute, (c) =>
@@ -100,6 +121,8 @@ export function createApp(deps: AppDependencies) {
       200,
     ),
   );
+
+  registerPasteRoutes(app, deps);
 
   app.doc("/openapi.json", {
     openapi: "3.1.0",

@@ -3,7 +3,7 @@
 A free, open-source, agent-first pastebin.
 
 `t1-paste` gives humans a clean web editor and gives agents a first-class CLI,
-real agent identities, and machine-readable discovery. It is designed to be
+raw HTTP endpoints, and machine-readable discovery. It is designed to be
 self-hosted with Docker and the same services we use in production.
 
 - Web: https://paste.transistorone.com
@@ -12,32 +12,65 @@ self-hosted with Docker and the same services we use in production.
 
 ## Status
 
-Early development. The product is being built in phases. APIs, schemas, and
-commands will change until the first release.
+Working core:
 
-## What it does
+- Anonymous paste creation, reading, raw view, metadata, expiry, passwords, and
+  burn-after-read.
+- Next.js web app with editor, paste pages, docs, and legal pages.
+- Rust CLI for `paste` and `get`.
+- Postgres schema, migrations, and seed.
+- Docker-first local development.
 
-- Create and share text pastes.
-- Syntax highlighting, Markdown, raw view, download, QR, and embed.
-- Expiry, burn-after-read, password protection, visibility, and tags.
-- Human accounts with email/password auth.
-- Agent accounts through WorkOS Agent Registration and `auth.md`.
-- A Rust CLI designed for low-token agent use.
-- Self-hosting with Docker Compose.
+In progress:
 
-## Stack
+- WorkOS email/password accounts.
+- WorkOS Agent Registration and the `auth.md` proxy.
+- Dashboard, CLI login, agent claim flow.
+- Admin, reports, rate limits, and Turnstile.
+- Cloudflare deployment and production self-host images.
 
-- Web: Next.js
-- API: Hono (Cloudflare Workers and Node)
-- Database: Postgres
-- Auth: WorkOS AuthKit + WorkOS Agent Registration
-- Email: Resend
-- CLI: Rust
-- Tooling: Vite+, pnpm, Docker
+## Quick start
+
+```bash
+docker compose up --build -d
+docker compose exec workspace pnpm run db:migrate
+```
+
+Open http://localhost:3000.
+
+The seed data is optional:
+
+```bash
+docker compose exec workspace pnpm run db:seed
+```
+
+## Create a paste with curl
+
+```bash
+curl -sS --data-binary @notes.txt \
+  http://localhost:8787/api/pastes
+```
+
+To get only the URL:
+
+```bash
+curl -sS \
+  -H "Accept: text/plain" \
+  --data-binary @notes.txt \
+  http://localhost:8787/api/pastes
+```
+
+## CLI
+
+```bash
+cd apps/cli
+cargo run -- --api-url http://localhost:8787 paste notes.txt
+cargo run -- --api-url http://localhost:8787 get <url>
+```
 
 ## Repository layout
 
-````text
+```text
 apps/api      Hono API
 apps/web      Next.js web app
 apps/cli      Rust CLI
@@ -47,63 +80,26 @@ packages/emails
 packages/sdk
 skills/t1-paste
 infra         Docker and self-host configuration
-Development
-The local development environment is Docker-first. Setup instructions will be
-added as the stack lands.
-Until then:
-vp install
-vp check
-vp test
-Contributing
-Read CONTRIBUTING.md and AGENTS.md.
-Security
-Report vulnerabilities privately. See SECURITY.md.
-License
-AGPL-3.0. See LICENSE.
+```
 
-## Step 4 — Write `CONTRIBUTING.md`
-
-```markdown
-# Contributing
-
-Thanks for helping build t1-paste.
-
-## Before you start
-
-- Read `README.md` and `AGENTS.md`.
-- Check existing issues before opening a new one.
-- For security issues, follow `SECURITY.md` instead of opening a public issue.
-
-## Development
-
-t1-paste is Docker-first. Once the development stack lands:
+## Checks
 
 ```bash
-docker compose up --build -d
-docker compose exec workspace pnpm check
-docker compose exec workspace pnpm test
-Until then:
-vp install
-vp check
-vp test
-Code style
-- TypeScript is strict.
-- Validate every trust boundary with Zod.
-- Keep pure logic in packages/shared.
-- Do not put server-only code in client components.
-- Do not commit secrets.
-- Add tests for behavior changes.
-Commits
-- Keep commits small and focused.
-- Use a clear prefix such as phase 3: add pastes schema or a conventional
-commit message.
-- Do not commit generated build output or local environment files.
-Pull requests
-- Explain what changed and why.
-- Include a test plan.
-- Link the relevant issue.
-- Make sure CI is green.
-License
-By contributing, you agree that your contributions are licensed under
-AGPL-3.0.
-````
+docker compose exec workspace pnpm run check
+docker compose exec workspace pnpm run typecheck
+docker compose exec workspace pnpm run test
+docker compose exec workspace pnpm run test:api
+cd apps/cli && cargo test
+```
+
+## Contributing
+
+Read `CONTRIBUTING.md` and `AGENTS.md`.
+
+## Security
+
+Report vulnerabilities privately. See `SECURITY.md`.
+
+## License
+
+AGPL-3.0. See `LICENSE`.

@@ -1,13 +1,21 @@
+import { createDatabase } from "@t1/db";
+
 import { createApp } from "./app.ts";
 import { parseEnv } from "./env.ts";
 
+const env = parseEnv({
+  NODE_ENV: "production",
+  DATABASE_URL: "postgres://invalid",
+});
+const { db } = createDatabase(env.DATABASE_URL);
+const app = createApp({
+  env,
+  version: "0.0.0",
+  db,
+});
+
 export default {
   fetch(request: Request): Response | Promise<Response> {
-    const app = createApp({
-      env: parseEnv({ NODE_ENV: "production" }),
-      version: "0.0.0",
-    });
-
     return app.fetch(request);
   },
 };

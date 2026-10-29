@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /new
+Disallow: /dashboard
+Disallow: /claim
+Disallow: /cli
+Sitemap: https://paste.transistorone.com/sitemap.xml

@@ -7,13 +7,14 @@
     ".": "./src/index.ts"
   },
   "scripts": {
-    "dev": "vpx --watch src/node.ts",
-    "test": "vp test"
+    "dev": "vpx --watch src/node.ts"
   },
   "dependencies": {
     "@hono/node-server": "catalog:",
     "@hono/zod-openapi": "catalog:",
+    "@t1/db": "workspace:*",
     "@t1/shared": "workspace:*",
+    "drizzle-orm": "catalog:",
     "hono": "catalog:",
     "zod": "catalog:"
   },

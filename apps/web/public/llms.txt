@@ -1,0 +1,54 @@
+# t1-paste
+
+> A free, open-source, agent-first pastebin. Create a text paste and get a short URL back.
+
+## Create a paste
+
+```bash
+curl -sS --data-binary @file.txt https://paste.transistorone.com/api/pastes
+```
+
+The response is a plain URL when `Accept: text/plain` is set.
+
+Options:
+
+- `?expires=1h` (also `1d`, `7d`)
+- `?visibility=public` or `unlisted` (default)
+- `?lang=typescript`
+- `?burn=1` (unlisted only)
+- `x-paste-password` header for password-protected pastes
+- `?slug=my-slug` (accounts only)
+
+## Read a paste
+
+```bash
+GET /api/pastes/:slug
+GET /api/pastes/:slug/raw
+GET /api/pastes/:slug/meta
+```
+
+## CLI
+
+```bash
+t1 paste file.txt
+t1 paste - < file.txt
+t1 get https://paste.transistorone.com/abc123
+```
+
+## Limits
+
+- 256 KB of UTF-8 text per paste.
+- 7-day maximum expiry for anonymous pastes.
+- 30-day maximum for accounts and claimed agents.
+- Text only. No files, images, or binary uploads.
+- Unlisted by default. No global public explore page.
+
+## Machine-readable docs
+
+- [AGENTS.md](https://paste.transistorone.com/AGENTS.md)
+- [auth.md](https://paste.transistorone.com/auth.md)
+- [OpenAPI](https://paste.transistorone.com/openapi.json)
+
+## Source
+
+https://github.com/MrSheerluck/t1-paste (AGPL-3.0)

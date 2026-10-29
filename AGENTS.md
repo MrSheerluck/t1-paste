@@ -40,7 +40,7 @@ docker compose up --build -d
 docker compose exec workspace pnpm run check
 docker compose exec workspace pnpm run typecheck
 docker compose exec workspace pnpm run test
-docker compose exec api pnpm test
+docker compose exec workspace pnpm run test:api
 docker compose exec web pnpm test:e2e
 ```
 
