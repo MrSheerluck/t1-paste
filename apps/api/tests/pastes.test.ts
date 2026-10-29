@@ -1,6 +1,6 @@
-import { describe, expect, it } from "vite-plus/test";
+import { afterAll, beforeAll, describe, expect, it } from "vite-plus/test";
 import { eq } from "drizzle-orm";
-import { createDatabase, pastes } from "@t1/db";
+import { agents, createDatabase, pastes } from "@t1/db";
 
 import { createApp } from "../src/app.ts";
 import { parseEnv } from "../src/env.ts";
@@ -19,10 +19,47 @@ const app = createApp({
   db,
 });
 
+let agentToken = "";
+let registrationId = "";
+
+beforeAll(async () => {
+  const registrationResponse = await app.request("/agent/identity", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ type: "anonymous" }),
+  });
+
+  const registration = (await registrationResponse.json()) as {
+    registration_id: string;
+    identity_assertion: string;
+  };
+
+  registrationId = registration.registration_id;
+
+  const tokenResponse = await app.request("/oauth2/token", {
+    method: "POST",
+    headers: { "content-type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({
+      grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer",
+      assertion: registration.identity_assertion,
+    }).toString(),
+  });
+
+  const token = (await tokenResponse.json()) as { access_token: string };
+  agentToken = token.access_token;
+});
+
+afterAll(async () => {
+  if (registrationId) {
+    await db.delete(agents).where(eq(agents.registrationId, registrationId));
+  }
+});
+
 async function createTextPaste(body: string, query = ""): Promise<{ slug: string; url: string }> {
   const response = await app.request(`/api/pastes${query}`, {
     method: "POST",
     headers: {
+      authorization: `Bearer ${agentToken}`,
       "content-type": "text/plain",
       accept: "text/plain",
     },
@@ -42,6 +79,17 @@ async function removePaste(slug: string): Promise<void> {
 }
 
 describe("paste routes", () => {
+  it("rejects anonymous paste creation", async () => {
+    const response = await app.request("/api/pastes", {
+      method: "POST",
+      headers: { "content-type": "text/plain" },
+      body: "anonymous",
+    });
+
+    expect(response.status).toBe(401);
+    expect(response.headers.get("www-authenticate")).toContain("resource_metadata");
+  });
+
   it("creates and reads a paste as plain text", async () => {
     const { slug, url } = await createTextPaste("hello from a test");
 
@@ -73,33 +121,6 @@ describe("paste routes", () => {
     }
   });
 
-  it("rejects private pastes for anonymous users", async () => {
-    const response = await app.request("/api/pastes", {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify({
-        content: "private",
-        visibility: "private",
-      }),
-    });
-
-    expect(response.status).toBe(403);
-  });
-
-  it("rejects anonymous expiry beyond 7 days", async () => {
-    const response = await app.request("/api/pastes?expires=30d", {
-      method: "POST",
-      headers: {
-        "content-type": "text/plain",
-      },
-      body: "too long",
-    });
-
-    expect(response.status).toBe(400);
-  });
-
   it("requires an explicit read for burn-after-read pastes", async () => {
     const { slug } = await createTextPaste("burn me", "?burn=1");
 
@@ -122,6 +143,7 @@ describe("paste routes", () => {
     const response = await app.request("/api/pastes", {
       method: "POST",
       headers: {
+        authorization: `Bearer ${agentToken}`,
         "content-type": "text/plain",
         accept: "text/plain",
         "x-paste-password": "correct horse",

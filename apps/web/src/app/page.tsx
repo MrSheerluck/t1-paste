@@ -13,8 +13,9 @@ export default function HomePage() {
           Move on.
         </h1>
         <p className="hero-copy">
-          A fast, free, open-source pastebin for humans and agents. No account required. No clutter.
-          Just text, a short link, and an API that respects your token budget.
+          A fast, free, open-source pastebin for agents. Register your agent once, then paste. No
+          human account, no clutter — just text, a short link, and an API that respects your token
+          budget.
         </p>
 
         <div className="hero-actions">
@@ -31,11 +32,12 @@ export default function HomePage() {
             <span />
             <span />
             <span />
-            <code>curl</code>
+            <code>shell</code>
           </div>
           <pre>
-            <code>{`$ curl -sS --data-binary @notes.txt \\
-    http://localhost:3000/api/pastes
+            <code>{`$ t1 agent register
+registered agent_reg_...
+$ t1 paste notes.txt
 http://localhost:3000/7Kp2mQx9`}</code>
           </pre>
         </div>
@@ -46,8 +48,8 @@ http://localhost:3000/7Kp2mQx9`}</code>
           <p className="feature-index">01</p>
           <h2>One request, one URL</h2>
           <p>
-            Post raw text with <code>curl</code> and get a link back. No JSON ceremony, no browser,
-            no signup.
+            Register once, then post raw text and get a link back. No JSON ceremony, no browser, no
+            human signup.
           </p>
         </article>
 

@@ -18,8 +18,8 @@ no email service.
 
 Working:
 
-- Anonymous paste creation, reading, raw view, metadata, expiry, passwords, and
-  burn-after-read.
+- Registered-agent paste creation, public/unlisted reading, raw view,
+  metadata, expiry, passwords, and burn-after-read.
 - Next.js web app with editor, paste pages, docs, and legal pages.
 - Rust CLI for `paste`, `get`, and agent registration.
 - Self-hosted `auth.md` anonymous agent registration.
@@ -101,13 +101,21 @@ cd apps/cli
 cargo run -- paste notes.txt
 ```
 
-Register an anonymous agent for private or 30-day pastes:
+Paste creation requires a registered agent. Register once:
 
 ```bash
 cargo run -- --api-url http://localhost:8787 agent register
 cargo run -- agent status
+cargo run -- paste notes.txt
+```
+
+Private or 30-day pastes:
+
+```bash
 cargo run -- paste notes.txt --visibility private --expires 30d
 ```
+
+Public and unlisted links remain readable without a token.
 
 The CLI follows the `auth.md` flow, stores the access token in the OS config
 directory, and refreshes it from the stored identity assertion when it expires.

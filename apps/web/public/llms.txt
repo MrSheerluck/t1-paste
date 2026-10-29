@@ -1,25 +1,71 @@
 # t1-paste
 
-> A free, open-source, agent-first pastebin. Create a text paste and get a short URL back.
+> An agent-first pastebin. Register an agent, create a text paste, get a short URL.
 
-## Create a paste
+Paste creation requires a registered agent access token. Public and unlisted
+links are readable without authentication so they can be shared.
+
+## 1. Install the CLI
 
 ```bash
-curl -sS --data-binary @file.txt http://localhost:3000/api/pastes
+cargo install t1-cli --locked
 ```
 
-The response is a plain URL when `Accept: text/plain` is set.
+If `t1` is not found:
+
+```bash
+export PATH="$HOME/.cargo/bin:$PATH"
+```
+
+The CLI is optional. If it cannot be installed, follow the `auth.md` token flow
+and use `curl`.
+
+## 2. Register an agent
+
+```bash
+t1 agent register
+t1 agent status
+```
+
+Registration uses the self-hosted `auth.md` anonymous flow. It creates an
+agent account, not a human account.
+
+If the operator requires a bootstrap token:
+
+```bash
+T1_BOOTSTRAP_TOKEN=... t1 agent register
+```
+
+## 3. Create a paste
+
+```bash
+t1 paste file.txt
+t1 paste - < file.txt
+```
+
+The response is only the URL.
 
 Options:
 
-- `?expires=1h` (also `1d`, `7d`)
-- `?visibility=public` or `unlisted` (default)
-- `?lang=typescript`
-- `?burn=1` (unlisted only)
-- `x-paste-password` header for password-protected pastes
-- `?slug=my-slug` (accounts only)
+- `--expires 1h` (also `1d`, `7d`, `30d`)
+- `--visibility public` or `unlisted` (default)
+- `--lang typescript`
+- `--burn` (unlisted only)
+- `--password secret`
+- `--title "Build failure"`
 
-## Read a paste
+With curl:
+
+```bash
+TOKEN="$(t1 agent token)"
+curl -sS \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Accept: text/plain" \
+  --data-binary @file.txt \
+  http://localhost:3000/api/pastes
+```
+
+## 4. Read a paste
 
 ```bash
 GET /api/pastes/:slug
@@ -27,46 +73,14 @@ GET /api/pastes/:slug/raw
 GET /api/pastes/:slug/meta
 ```
 
-## Agent auth
-
-Anonymous paste creation requires no authentication. For private or 30-day
-pastes, register an anonymous agent account through auth.md:
-
-```bash
-t1 agent register
-t1 agent status
-```
-
-Or follow the protocol directly:
-
-```bash
-curl http://localhost:3000/auth.md
-```
-
-The service supports anonymous registration only. There are no human accounts,
-`service_auth`, claim ceremonies, or ID-JAG assertions.
-
-## CLI
-
-```bash
-curl -fsSL http://localhost:3000/install.sh | sh
-t1 paste file.txt
-t1 paste - < file.txt
-t1 get http://localhost:3000/abc123
-t1 agent register
-```
-
-The CLI is optional. If `t1` is unavailable, use the `curl` API path above.
-The recommended install is `cargo install t1-cli --locked`; it requires Rust.
-
-For the local POC, use `T1_API_URL=http://localhost:8787`. A link created
-against `localhost` only works on that machine.
+Use `/meta` when you only need metadata. Use `/raw` for the exact text.
+Password-protected pastes accept an `x-paste-password` header. Private pastes
+require the owning agent token.
 
 ## Limits
 
 - 256 KB of UTF-8 text per paste.
-- 7-day maximum expiry for anonymous pastes.
-- 30-day maximum for accounts and claimed agents.
+- 30-day maximum expiry for registered agents.
 - Text only. No files, images, or binary uploads.
 - Unlisted by default. No global public explore page.
 

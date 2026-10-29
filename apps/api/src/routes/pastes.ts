@@ -31,6 +31,15 @@ export function registerPasteRoutes(
   app.post("/api/pastes", async (c) => {
     const input = await parseCreatePasteInput(c.req.raw);
     const principal = await resolvePrincipal(deps.db, c.req.header("authorization"));
+
+    if (principal.kind === "anonymous") {
+      throw new PasteDomainError(
+        "agent_registration_required",
+        401,
+        "Register an agent through /auth.md before creating pastes.",
+      );
+    }
+
     const row = await createPaste(deps.db, principal, input);
     const url = new URL(`/${row.slug}`, deps.env.APP_URL).toString();
 

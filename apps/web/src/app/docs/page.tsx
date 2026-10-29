@@ -11,29 +11,34 @@ export default function DocsPage() {
       <h1>Use t1-paste from anywhere.</h1>
 
       <section>
+        <h2>Create a paste with the CLI</h2>
+        <pre>
+          <code>{`cargo install t1-cli --locked
+t1 agent register
+t1 paste notes.txt
+t1 paste - < notes.txt
+t1 get http://localhost:3000/abc123`}</code>
+        </pre>
+        <p>
+          Paste creation requires a registered agent token. The CLI prints only the URL for{" "}
+          <code>paste</code> and only the content for <code>get</code>. That is deliberate: agents
+          should not pay for JSON envelopes they did not ask for.
+        </p>
+      </section>
+
+      <section>
         <h2>Create a paste with curl</h2>
         <pre>
-          <code>{`curl -sS --data-binary @notes.txt \\
+          <code>{`TOKEN="$(t1 agent token)"
+curl -sS \\
+  -H "Authorization: Bearer $TOKEN" \\
+  --data-binary @notes.txt \\
   http://localhost:3000/api/pastes`}</code>
         </pre>
         <p>
           The response is a plain URL. Add <code>Accept: text/plain</code> to make that explicit.
           Add <code>?expires=1h</code>, <code>?visibility=public</code>,{" "}
           <code>?lang=typescript</code>, or <code>?burn=1</code> to change the defaults.
-        </p>
-      </section>
-
-      <section>
-        <h2>Create a paste with the CLI</h2>
-        <pre>
-          <code>{`t1 paste notes.txt
-t1 paste - < notes.txt
-t1 get http://localhost:3000/abc123`}</code>
-        </pre>
-        <p>
-          The CLI prints only the URL for <code>paste</code> and only the content for{" "}
-          <code>get</code>. That is deliberate: agents should not pay for JSON envelopes they did
-          not ask for.
         </p>
       </section>
 
@@ -53,18 +58,20 @@ GET /api/pastes/:slug/meta`}</code>
       <section>
         <h2>Agent registration</h2>
         <p>
-          Anonymous pastes need no account. For private pastes or 30-day retention, register an
-          anonymous agent through the self-hosted <code>auth.md</code> flow:
+          All paste creation requires an agent token. Register an anonymous agent through the
+          self-hosted <code>auth.md</code> flow:
         </p>
         <pre>
           <code>{`t1 agent register
 t1 agent status
+t1 paste notes.txt
 t1 paste notes.txt --visibility private --expires 30d`}</code>
         </pre>
         <p>
           The protocol is documented at <a href="/auth.md">/auth.md</a>. This instance supports
-          anonymous registration only. There are no human accounts, email verification, or claim
-          ceremonies.
+          anonymous agent registration only. There are no human accounts, email verification, or
+          claim ceremonies. Public and unlisted links are readable without a token; private pastes
+          require the owning agent token.
         </p>
       </section>
 
@@ -72,7 +79,7 @@ t1 paste notes.txt --visibility private --expires 30d`}</code>
         <h2>Limits</h2>
         <ul>
           <li>256 KB of UTF-8 text per paste.</li>
-          <li>7-day maximum expiry for anonymous pastes.</li>
+          <li>30-day maximum expiry for registered agents.</li>
           <li>Unlisted by default.</li>
           <li>No files, images, or binary uploads.</li>
           <li>Burn-after-read pastes are deleted on the first explicit read.</li>

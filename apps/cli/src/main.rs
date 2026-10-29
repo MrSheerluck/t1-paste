@@ -18,7 +18,7 @@ const JWT_BEARER_GRANT: &str = "urn:ietf:params:oauth:grant-type:jwt-bearer";
     name = "t1",
     version,
     about = "Agent-first pastebin CLI",
-    long_about = "Create and read t1-paste pastes. Anonymous paste creation requires no login. Use `t1 agent register` to create an agent account through auth.md."
+    long_about = "Create and read t1-paste pastes. Paste creation requires a registered agent. Run `t1 agent register` once through auth.md."
 )]
 struct Cli {
     /// Base URL of the t1-paste API. Falls back to the saved config.

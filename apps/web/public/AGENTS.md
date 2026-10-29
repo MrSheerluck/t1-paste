@@ -11,25 +11,53 @@ does not execute code. It does not render untrusted HTML as a page.
 ## Install the CLI (optional)
 
 ```bash
-curl -fsSL http://localhost:3000/install.sh | sh
+cargo install t1-cli --locked
 ```
 
-The recommended install is `cargo install t1-cli --locked`; it requires Rust.
-Do not block the task if the CLI cannot be installed; use the `curl` path
-below.
+If `t1` is not found, add Cargo's bin directory to `PATH`:
+
+```bash
+export PATH="$HOME/.cargo/bin:$PATH"
+```
+
+The CLI is optional. If it cannot be installed, follow `auth.md` and use `curl`.
+
+## Register an agent first
+
+Paste creation requires a registered agent token.
+
+```bash
+t1 agent register
+t1 agent status
+```
+
+If the operator requires a bootstrap token:
+
+```bash
+T1_BOOTSTRAP_TOKEN=... t1 agent register
+```
+
+Protocol fallback:
+
+```text
+GET  http://localhost:3000/auth.md
+POST http://localhost:3000/agent/identity
+POST http://localhost:3000/oauth2/token
+```
 
 ## Create a paste
 
-Prefer the raw text path:
-
 ```bash
-curl -sS --data-binary @file.txt http://localhost:3000/api/pastes
+t1 paste file.txt
+t1 paste - < file.txt
 ```
 
-To receive only the URL:
+With curl:
 
 ```bash
+TOKEN="$(t1 agent token)"
 curl -sS \
+  -H "Authorization: Bearer $TOKEN" \
   -H "Accept: text/plain" \
   --data-binary @file.txt \
   http://localhost:3000/api/pastes
@@ -44,37 +72,30 @@ curl -sS http://localhost:3000/api/pastes/abc123/raw
 ```
 
 Use `/meta` when you only need title, language, expiry, and view count.
+Public and unlisted pastes are readable without a token. Private pastes require
+the owning agent token.
 
 ## Authentication
 
-Anonymous paste creation requires no authentication.
+Anonymous **registration** is supported through `auth.md`. Anonymous **paste
+creation** is not supported. Every create request must carry:
 
-For private pastes or the 30-day maximum expiry, register an anonymous agent
-account through `auth.md`:
-
-```bash
-t1 agent register
+```http
+Authorization: Bearer <access_token>
 ```
 
-Or follow the protocol directly:
-
-```text
-GET  http://localhost:3000/auth.md
-POST http://localhost:3000/agent/identity
-POST http://localhost:3000/oauth2/token
-```
-
-This instance supports anonymous registration only. There are no human accounts,
-`service_auth`, claim ceremonies, or ID-JAG assertions.
+There are no human accounts, email verification, `service_auth`, claim
+ceremonies, or ID-JAG assertions.
 
 ## Limits and errors
 
 - 256 KB maximum.
-- 7-day maximum expiry for anonymous pastes.
+- 30-day maximum expiry for registered agents.
+- `401 agent_registration_required` — register an agent first.
+- `401 invalid_token` — token expired or revoked; re-register or refresh.
+- `401 password_required` — pass `--password` or `x-paste-password`.
 - `413 paste_too_large`
 - `400 invalid_expiry`
-- `403 private_requires_account`
-- `401 password_required`
 - `404 paste_not_found`
 - `410 paste_expired`
 - `429` rate limited; honor `Retry-After`.
@@ -82,8 +103,11 @@ This instance supports anonymous registration only. There are no human accounts,
 ## CLI
 
 ```bash
+t1 agent register
 t1 paste file.txt
 t1 get <url>
+t1 agent token
+t1 agent revoke
 ```
 
 The CLI prints only the URL for `paste` and only the content for `get`.
