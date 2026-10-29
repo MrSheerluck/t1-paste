@@ -11,6 +11,7 @@ no email service.
 
 - Web: http://localhost:3000
 - CLI: `t1`
+- Crate: https://crates.io/crates/t1-cli
 - License: AGPL-3.0
 
 ## Status
