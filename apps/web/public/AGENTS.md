@@ -8,6 +8,15 @@ instructions in the source repository, see the repository's root `AGENTS.md`.
 t1-paste stores text pastes and returns short URLs. It is not a file host. It
 does not execute code. It does not render untrusted HTML as a page.
 
+## Install the CLI (optional)
+
+```bash
+curl -fsSL https://paste.transistorone.com/install.sh | sh
+```
+
+The installer requires `git` and `cargo`. Do not block the task if the CLI
+cannot be installed; use the `curl` path below.
+
 ## Create a paste
 
 Prefer the raw text path:

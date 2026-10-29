@@ -67,10 +67,31 @@ curl -sS \
 
 ## CLI
 
+Install from source with one command:
+
+```bash
+curl -fsSL http://localhost:3000/install.sh | sh
+```
+
+The installer requires `git` and `cargo`. It installs `t1` to
+`$HOME/.cargo/bin/t1`. If that directory is not on your `PATH`:
+
+```bash
+export PATH="$HOME/.cargo/bin:$PATH"
+```
+
+Then:
+
+```bash
+t1 --api-url http://localhost:8787 paste notes.txt
+t1 --api-url http://localhost:8787 get <url>
+```
+
+Or run from the repo without installing:
+
 ```bash
 cd apps/cli
 cargo run -- --api-url http://localhost:8787 paste notes.txt
-cargo run -- --api-url http://localhost:8787 get <url>
 ```
 
 Register an anonymous agent for private or 30-day pastes:
