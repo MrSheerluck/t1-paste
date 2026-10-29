@@ -16,12 +16,18 @@
   "scripts": {
     "dev": "vp run website#dev",
     "check": "vp check",
+    "typecheck": "tsc --noEmit -p packages/shared/tsconfig.json && tsc --noEmit -p packages/db/tsconfig.json && tsc --noEmit -p packages/emails/tsconfig.json && tsc --noEmit -p packages/sdk/tsconfig.json && tsc --noEmit -p apps/api/tsconfig.json && tsc --noEmit -p apps/web/tsconfig.json",
     "test": "vp run -r test",
     "build": "vp run -r build",
-    "ready": "vp check && vp run -r test && vp run -r build",
-    "prepare": "vp config"
+    "ready": "vp check && pnpm run typecheck && vp run -r test && vp run -r build",
+    "prepare": "vp config",
+    "db:generate": "pnpm --filter @t1/db generate",
+    "db:migrate": "pnpm --filter @t1/db migrate",
+    "db:seed": "pnpm --filter @t1/db seed",
+    "db:studio": "pnpm --filter @t1/db studio"
   },
   "devDependencies": {
+    "typescript": "catalog:",
     "vite-plus": "catalog:"
   },
   "devEngines": {

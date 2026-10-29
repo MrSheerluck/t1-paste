@@ -4,11 +4,34 @@ export default defineConfig({
   staged: {
     "*": "vp check --fix",
   },
-  fmt: {},
+  fmt: {
+    ignorePatterns: [
+      "**/node_modules/**",
+      "**/dist/**",
+      "**/coverage/**",
+      "**/.next/**",
+      "**/.wrangler/**",
+      "**/target/**",
+      "**/playwright-report/**",
+      "**/test-results/**",
+    ],
+  },
   lint: {
+    ignorePatterns: [
+      "**/node_modules/**",
+      "**/dist/**",
+      "**/coverage/**",
+      "**/.next/**",
+      "**/.wrangler/**",
+      "**/target/**",
+      "**/playwright-report/**",
+      "**/test-results/**",
+    ],
     jsPlugins: [{ name: "vite-plus", specifier: "vite-plus/oxlint-plugin" }],
     rules: { "vite-plus/prefer-vite-plus-imports": "error" },
-    options: { typeAware: true, typeCheck: true },
+    // tsgolint currently runs out of memory inside Docker. We run `pnpm typecheck`
+    // separately with the TypeScript compiler instead.
+    options: { typeAware: false, typeCheck: false },
   },
   run: {
     cache: true,

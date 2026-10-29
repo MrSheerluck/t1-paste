@@ -8,6 +8,9 @@ catalogMode: prefer
 
 catalog:
   "@types/node": ^24
+  drizzle-kit: ^0.31.11
+  drizzle-orm: ^0.45.4
+  postgres: ^3.4.9
   typescript: ^7.0.2
   vite: npm:@voidzero-dev/vite-plus-core@1.4.0
   vite-plus: 1.4.0
@@ -18,3 +21,5 @@ peerDependencyRules:
     - vite
   allowedVersions:
     vite: "*"
+allowBuilds:
+  esbuild: true

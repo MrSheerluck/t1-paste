@@ -37,17 +37,24 @@ Docker-first once the development stack lands:
 
 ```bash
 docker compose up --build -d
-docker compose exec workspace pnpm check
-docker compose exec workspace pnpm test
+docker compose exec workspace pnpm run check
+docker compose exec workspace pnpm run typecheck
+docker compose exec workspace pnpm run test
 docker compose exec api pnpm test
 docker compose exec web pnpm test:e2e
 ```
+
+`vp check` covers formatting and linting. `pnpm run typecheck` runs the
+TypeScript compiler per package. Type-aware Oxlint/tsgolint is currently
+disabled inside Docker because it runs out of memory; do not re-enable it
+without measuring container memory first.
 
 Until then:
 
 ```bash
 vp install
 vp check
+pnpm run typecheck
 vp test
 vp build
 ```

@@ -1,0 +1,64 @@
+name: t1-paste
+
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: t1
+      POSTGRES_PASSWORD: t1
+      POSTGRES_DB: t1
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U t1 -d t1"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  mailpit:
+    image: axllent/mailpit:latest
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+
+  workspace:
+    build:
+      context: .
+      dockerfile: infra/dev/Dockerfile
+      target: workspace
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+    develop:
+      watch:
+        - action: sync
+          path: .
+          target: /app
+          ignore:
+            - .git
+            - .env
+            - node_modules
+            - apps/*/node_modules
+            - packages/*/node_modules
+            - apps/*/dist
+            - packages/*/dist
+            - apps/*/.next
+            - apps/cli/target
+            - coverage
+            - playwright-report
+            - test-results
+            - BUILD_PLAN.md
+            - LEARNING_LOG.md
+        - action: rebuild
+          path: package.json
+        - action: rebuild
+          path: pnpm-lock.yaml
+        - action: rebuild
+          path: pnpm-workspace.yaml
+
+volumes:
+  pgdata:
