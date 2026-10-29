@@ -2,10 +2,23 @@
   "name": "t1-paste",
   "version": "0.0.0",
   "private": true,
+  "description": "A free, open-source, agent-first pastebin.",
+  "homepage": "https://paste.transistorone.com",
+  "bugs": {
+    "url": "https://github.com/MrSheerluck/t1-paste/issues"
+  },
+  "license": "AGPL-3.0-only",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MrSheerluck/t1-paste.git"
+  },
   "type": "module",
   "scripts": {
-    "ready": "vp check && vp run -r test && vp run -r build",
     "dev": "vp run website#dev",
+    "check": "vp check",
+    "test": "vp run -r test",
+    "build": "vp run -r build",
+    "ready": "vp check && vp run -r test && vp run -r build",
     "prepare": "vp config"
   },
   "devDependencies": {

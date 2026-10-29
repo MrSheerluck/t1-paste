@@ -34,3 +34,25 @@ dist-ssr
 !.vscode/
 !.vscode/settings.json
 !.vscode/extensions.json
+
+# Private build plan
+BUILD_PLAN.md
+
+
+
+# Build and test output
+.wrangler/
+.next/
+out/
+coverage/
+playwright-report/
+test-results/
+target/
+.turbo/
+*.tsbuildinfo
+
+# Local Docker data
+docker-data/
+
+# Private notes
+LEARNING_LOG.md

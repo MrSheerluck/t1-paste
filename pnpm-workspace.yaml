@@ -2,6 +2,7 @@ packages:
   - apps/*
   - packages/*
   - tools/*
+  - "!apps/cli"
 
 catalogMode: prefer
 
